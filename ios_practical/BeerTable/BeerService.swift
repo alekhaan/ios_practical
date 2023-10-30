@@ -7,6 +7,10 @@
 
 import Foundation
 
+protocol BeerServicing {
+    func fetchBeer(comletionHandler: @escaping ([BeerDTO]) -> Void)
+}
+
 final class BeerService {
     
     let decoder: JSONDecoder = {
@@ -20,6 +24,12 @@ final class BeerService {
         let session = URLSession(configuration: sessionConfiguration)
         return session
     }()
+    
+}
+
+//MARK: - BeerServicing
+
+extension BeerService: BeerServicing {
     
     func fetchBeer(comletionHandler: @escaping ([BeerDTO]) -> Void) {
         let url: URL = URL(string: "https://api.punkapi.com/v2/beers")!
