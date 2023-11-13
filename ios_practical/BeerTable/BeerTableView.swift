@@ -7,16 +7,21 @@
 
 import UIKit
 
+protocol BeerTableViewDelegate {
+    func didSelectRow(_ beerModel: BeerDTO)
+}
+
 final class BeerTableView: UIView {
-    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = tableManager
+        tableView.delegate = tableManager
         return tableView
     }()
     
     private lazy var spinnerView = UIActivityIndicatorView(style: .large)
     private lazy var tableManager = BeerTableManager()
+    var delegate: BeerTableViewDelegate?
     
     init() {
         super.init(frame: .zero)
@@ -24,6 +29,7 @@ final class BeerTableView: UIView {
         addSubviews()
         makeConstraints()
         spinnerView.startAnimating()
+        tableManager.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -38,10 +44,18 @@ final class BeerTableView: UIView {
     
 }
 
+//MARK: - BeerTableManagerDelegate
+
+extension BeerTableView: BeerTableManagerDelegate {
+    func didSelectRow(_ beerModel: BeerDTO) {
+        delegate?.didSelectRow(beerModel)
+    }
+    
+}
+
 //MARK: - Private
 
 private extension BeerTableView {
-    
     func addSubviews() {
         [tableView, spinnerView].forEach {
             self.addSubview($0)
